@@ -1,18 +1,14 @@
 require_relative "../config/environment.rb"
 
-  # Remember, you can access your database connection anywhere in this class
-  #  with DB[:conn]
-
-
 class Student
   attr_accessor :name, :grade
   attr_reader :id
 
-  def initialize(id=nil, name, grade)
-    @id = id
-    @name = name
-    @grade = grade
-  end
+   def initialize(id=nil, name, grade)
+     @id = id
+     @name = name
+     @grade = grade
+   end
 
   def self.create_table
     sql =  <<-SQL 
@@ -25,7 +21,11 @@ class Student
    DB[:conn].execute(sql)
   end
 
-  
+  def self.new_from_db(row)
+    new_student = self.new(row[0], row[1], row[2])
+    new_student
+  end
+
   def self.drop_table
     sql =  <<-SQL 
      DROP TABLE students;
@@ -46,7 +46,7 @@ class Student
     end
   end
   
-  def self.create(name:, grade:)
+  def self.create(name, grade)
     student = Student.new(name, grade)
     student.save
     student
